@@ -1,0 +1,425 @@
+#include<iostream>
+#include<fstream>
+#include<string>
+#include <cctype>
+#include<cmath>
+using namespace std;
+int main()
+{
+    char sig,temp[30];
+    string st1,st2;
+    int i,j,l,k,tt,t,n,ne,sum,n1,n2,input1[20],input2[20],num1[20],num2[20],output[30],output_num[30],te;
+    ifstream fin("input_hw1_1.dat");
+    fin>>n;
+    for(int b=1;b<=n;b++)
+    {
+        for(int x=0;x<2;x++)
+        {
+            fin>>sig;
+        }
+        k=0;
+        i=-1;
+        j=-1;
+        sum=0;
+        t=-1;
+        ne=0;
+        while(fin.get(sig))
+        {
+            if(sig=='\n')
+            {
+                tt=t;
+                while(t>-1)
+                {
+                    sum+=round(pow(10,t))*(temp[tt-t]-48);
+                    t--;
+                }
+                j++;
+                i++;
+                num1[j]=0;
+                input1[i]=sum;
+                k=0;
+                sum=0;
+                break;
+            }
+            if(l==1&&t!=-1&&sig==' ')
+            {
+                tt=t;
+                while(t>-1)
+                {
+                    sum+=round(pow(10,tt-t))*(temp[t]-48);
+                    t--;
+                }
+                j++;
+                num1[j]=sum;
+                k=0;
+                sum=0;
+                l=0;
+            }
+            if(isdigit(sig))
+            {
+                t++;
+                temp[t]=sig;
+                k=1;
+            }
+            if(sig=='^')
+            {
+                l=1;
+            }
+            if(sig=='x')
+            {
+                if(k==0)
+                {
+                    i++;
+                    input1[i]=1;
+                }
+                if(k==1)
+                {
+                    tt=t;
+                    while(t>-1)
+                    {
+                        sum+=round(pow(10,t))*(temp[tt-t]-48);
+                        t--;
+                    }
+                    i++;
+                    if(ne==1)sum=-sum;
+                    input1[i]=sum;
+                    sum=0;
+                    k=0;
+                }
+            }
+            if(sig=='-')
+            {
+                ne=1;
+            }
+        }
+        n1=i;
+        for(int x=0;x<2;x++)
+        {
+            fin>>sig;
+        }
+        k=0;
+        i=-1;
+        j=-1;
+        sum=0;
+        ne=0;
+        t=-1;
+        while(fin.get(sig))
+        {
+            if(sig=='\n')
+            {
+                tt=t;
+                while(t>-1)
+                {
+                    sum+=round(pow(10,t))*(temp[tt-t]-48);
+                    t--;
+                }
+                j++;
+                i++;
+                num2[j]=0;
+                input2[i]=sum;
+                k=0;
+                sum=0;
+                break;
+            }
+            if(l==1&&sig==' '&&t!=-1)
+            {
+                tt=t;
+                while(t>-1)
+                {
+                    sum+=round(pow(10,t))*(temp[tt-t]-48);
+                    t--;
+                }
+                j++;
+                num2[j]=sum;
+                k=0;
+                sum=0;
+                l=0;
+            }
+            if(isdigit(sig))
+            {
+                t++;
+                temp[t]=sig;
+                k=1;
+            }
+            if(sig=='^')
+            {
+                l=1;
+            }
+            if(sig=='x')
+            {
+                if(k==0)
+                {
+                    i++;
+                    input2[i]=1;
+                }
+                if(k==1)
+                {
+                    tt=t;
+                    while(t>-1)
+                    {
+                        sum+=round(pow(10,t))*(temp[tt-t]-48);
+                        t--;
+                    }
+                    i++;
+                    if(ne==1)sum=-sum;
+                    input2[i]=sum;
+                    sum=0;
+                    k=0;
+                }
+            }
+            if(sig=='-')
+            {
+               ne=1;
+            }
+        }
+        n2=i;
+        cout<<b<<endl;
+        for(i=0;i<=n1;i++)
+        {
+            output[i]=input1[i];
+            output_num[i]=num1[i];
+        }
+        for(i=0;i<=n2;i++)
+        {
+            output[i+n1+1]=input2[i];
+            output_num[i+n1+1]=num2[i];
+        }
+        for(i=0;i<=n1+n2+1;i++)
+        {
+            for(j=i+1;j<=n1+n2+1;j++)
+            {
+                if(output_num[i]==output_num[j])
+                {
+                    output[i]+=output[j];
+                    output[j]=-1;
+                    output_num[j]=-1;
+                }
+            }
+        }
+        for(i=0;i<=n1+n2+1;i++)
+        {
+            for(j=i+1;j<=n1+n2+1;j++)
+            {
+                if(output_num[i]<output_num[j])
+                {
+                    te=output[i];
+                    output[i]=output[j];
+                    output[j]=te;
+                    te=output_num[i];
+                    output_num[i]=output_num[j];
+                    output_num[j]=te;
+                }
+            }
+        }
+        cout<<"P1 + P2 = ";
+        if(output[0]!=1&&output[0]!=0)cout<<output[0]<<" x ^ "<<output_num[0];
+        if(output[0]==1)cout<<" x ^ "<<output_num[0];
+        for(i=1;i<=n1+n2+1;i++)
+        {
+            if(output_num[i]==0&&output[i]==0)
+            {
+                break;
+            }
+            if(output_num[i]==0)
+            {
+                if(output[i]<0)
+                {
+                    cout<<" - "<<-output[i]<<endl;
+                }
+                else
+                {
+                    cout<<" + "<<output[i]<<endl;
+                }
+                break;
+            }
+            if(output[i]==0)
+            {
+                continue;
+            }
+            else
+            {
+                if(output[i]<0)
+                {
+                    cout<<" - "<<-output[i]<<" x";
+                    if(output_num[i]!=1)
+                    {
+                        cout<<"^ "<<output_num[i];
+                    }
+                }
+                else
+                {
+                    cout<<" + "<<output[i]<<" x";
+                    if(output_num[i]!=1)
+                    {
+                        cout<<" ^ "<<output_num[i];
+                    }
+                }
+            }
+        }
+        for(i=0;i<=n1;i++)
+        {
+            output[i]=input1[i];
+            output_num[i]=num1[i];
+        }
+        for(i=0;i<=n2;i++)
+        {
+            output[i+n1+1]=-input2[i];
+            output_num[i+n1+1]=num2[i];
+        }
+        for(i=0;i<=n1+n2+1;i++)
+        {
+            for(j=i+1;j<=n1+n2+1;j++)
+            {
+                if(output_num[i]==output_num[j])
+                {
+                    output[i]+=output[j];
+                    output[j]=-1;
+                    output_num[j]=-1;
+                }
+            }
+        }
+        for(i=0;i<=n1+n2+1;i++)
+        {
+            for(j=i+1;j<=n1+n2+1;j++)
+            {
+                if(output_num[i]<output_num[j])
+                {
+                    te=output[i];
+                    output[i]=output[j];
+                    output[j]=te;
+                    te=output_num[i];
+                    output_num[i]=output_num[j];
+                    output_num[j]=te;
+                }
+            }
+        }
+        cout<<"P1 ¡V P2 = ";
+        if(output[0]!=1&&output[0]!=0)cout<<output[0]<<" x ^ "<<output_num[0];
+        if(output[0]==1)cout<<" x ^ "<<output_num[0];
+        for(i=1;i<=n1+n2+1;i++)
+        {
+            if(output_num[i]==0&&output[i]==0)
+            {
+                break;
+            }
+            if(output_num[i]==0)
+            {
+                if(output[i]<0)
+                {
+                    cout<<" - "<<-output[i]<<endl;
+                }
+                else
+                {
+                    cout<<" + "<<output[i]<<endl;
+                }
+                break;
+            }
+            if(output[i]==0)
+            {
+                continue;
+            }
+            else
+            {
+                if(output[i]<0)
+                {
+                    cout<<" - "<<-output[i]<<" x";
+                    if(output_num[i]!=1)
+                    {
+                        cout<<"^ "<<output_num[i];
+                    }
+                }
+                else
+                {
+                    cout<<" + "<<output[i]<<" x";
+                    if(output_num[i]!=1)
+                    {
+                        cout<<" ^ "<<output_num[i];
+                    }
+                }
+            }
+        }
+        int nunn=0;
+        for(i=0;i<=n1;i++)
+        {
+            for(j=0;j<=n2;j++)
+            {
+                output[nunn]=input1[i]*input2[j];
+                output_num[nunn]=num1[i]+num2[j];
+                nunn++;
+            }
+        }
+        for(i=0;i<nunn;i++)
+        {
+            for(j=i+1;j<nunn;j++)
+            {
+                if(output_num[i]==output_num[j])
+                {
+                    output[i]+=output[j];
+                    output[j]=-1;
+                    output_num[j]=-1;
+                }
+            }
+        }
+        for(i=0;i<nunn;i++)
+        {
+            for(j=i+1;j<nunn;j++)
+            {
+                if(output_num[i]<output_num[j])
+                {
+                    te=output[i];
+                    output[i]=output[j];
+                    output[j]=te;
+                    te=output_num[i];
+                    output_num[i]=output_num[j];
+                    output_num[j]=te;
+                }
+            }
+        }
+        cout<<"P1 * P2 = ";
+        if(output[0]!=1&&output[0]!=0)cout<<output[0]<<" x ^ "<<output_num[0];
+        if(output[0]==1)cout<<" x ^ "<<output_num[0];
+        for(i=1;i<nunn;i++)
+        {
+            if(output_num[i]==0&&output[i]==0)
+            {
+                break;
+            }
+            if(output_num[i]==0)
+            {
+                if(output[i]<0)
+                {
+                    cout<<" - "<<-output[i]<<endl;
+                }
+                else
+                {
+                    cout<<" + "<<output[i]<<endl;
+                }
+                break;
+            }
+            if(output[i]==0)
+            {
+                continue;
+            }
+            else
+            {
+                if(output[i]<0)
+                {
+                    cout<<" - "<<-output[i]<<" x";
+                    if(output_num[i]!=1)
+                    {
+                        cout<<"^ "<<output_num[i];
+                    }
+                }
+                else
+                {
+                    cout<<" + "<<output[i]<<" x";
+                    if(output_num[i]!=1)
+                    {
+                        cout<<" ^ "<<output_num[i];
+                    }
+                }
+            }
+        }
+        cout<<endl;
+    }
+}
